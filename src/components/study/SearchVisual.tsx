@@ -26,7 +26,7 @@ function framesFor(arr: number[], target: number): Frame[] {
 }
 
 export function SearchVisual({ visual }: { visual: Lesson["visual"] }) {
-  const sorted = visual.array.length >= 3 && visual.array.every((v, i, a) => i === 0 || a[i - 1] <= v) && visual.target !== null;
+  const sorted = visual.array.length >= 3 && visual.array.every((v, i, a) => i === 0 || a[i - 1]! <= v) && visual.target !== null;
   const frames = useMemo(() => (sorted ? framesFor(visual.array, visual.target!) : []), [visual, sorted]);
   const [i, setI] = useState(0);
   const [playing, setPlaying] = useState(false);
