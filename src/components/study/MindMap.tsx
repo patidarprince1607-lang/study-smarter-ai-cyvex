@@ -22,7 +22,7 @@ export function MindMap({ map }: { map: Lesson["mindMap"] }) {
       out.push({ id, label: b.label, info: b.info, x: CX + Math.cos(a) * R1 * 1.25, y: CY + Math.sin(a) * R1, depth: 1, parent: "c" });
       const kids = b.children ?? [];
       kids.forEach((k, j) => {
-        const spread = 0.34;
+        const spread = 0.48;
         const ka = a + (j - (kids.length - 1) / 2) * spread;
         out.push({ id: `${id}-${j}`, label: k.label, info: k.info, x: CX + Math.cos(ka) * R2 * 1.3, y: CY + Math.sin(ka) * R2, depth: 2, parent: id });
       });
