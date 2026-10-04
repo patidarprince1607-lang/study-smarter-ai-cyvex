@@ -8,7 +8,9 @@ function getKey() {
   return key;
 }
 
+// Prefer the fast MoE Gemma 4 (26B-A4B) for a snappy demo; fall back to others.
 function sizeScore(name: string) {
+  if (/a4b/i.test(name)) return 1000;
   const m = name.match(/(\d+)b/i);
   const n = m ? Number(m[1]) : 0;
   return /-e\d+b/i.test(name) ? n / 10 : n; // effective-param "e" models rank lower
