@@ -11,13 +11,13 @@ export function Quiz({ quiz, onFinish }: { quiz: QuizQ[]; onFinish: (score: numb
   useEffect(() => { setI(0); setPicked(null); setScore(0); setWrongs([]); setDone(false); }, [quiz]);
 
   if (!quiz.length) return <p className="text-muted-foreground">No quiz available.</p>;
-  const q = quiz[i];
+  const q = quiz[i]!;
 
   const pick = (k: number) => {
     if (picked !== null) return;
     setPicked(k);
     if (k === q.answerIndex) setScore((s) => s + 1);
-    else setWrongs((w) => [...w, { question: q.question, chosen: q.options[k], correct: q.options[q.answerIndex], concept: q.concept }]);
+    else setWrongs((w) => [...w, { question: q.question, chosen: q.options[k] ?? "", correct: q.options[q.answerIndex] ?? "", concept: q.concept }]);
   };
   const next = () => {
     if (i + 1 < quiz.length) { setI(i + 1); setPicked(null); }

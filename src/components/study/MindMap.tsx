@@ -30,17 +30,17 @@ export function MindMap({ map }: { map: Lesson["mindMap"] }) {
     return out.map((p) => ({ ...p, x: Math.max(95, Math.min(W - 95, p.x)), y: Math.max(30, Math.min(H - 30, p.y)) }));
   }, [map]);
 
-  const byId = Object.fromEntries(nodes.map((n) => [n.id, n]));
+  const byId = Object.fromEntries(nodes.map((n) => [n.id, n])) as Record<string, N>;
   const active = hover ?? null;
   const related = new Set<string>();
   if (active) {
     related.add(active);
     const a = byId[active];
-    if (a?.parent) { related.add(a.parent); if (byId[a.parent]?.parent) related.add(byId[a.parent].parent!); }
+    if (a?.parent) { related.add(a.parent); const gp = byId[a.parent]?.parent; if (gp) related.add(gp); }
     nodes.forEach((n) => n.parent === active && related.add(n.id));
   }
   const dim = (id: string) => active !== null && !related.has(id);
-  const sel = byId[selected] ?? nodes[0];
+  const sel = (byId[selected] ?? nodes[0])!;
 
   return (
     <div className="grid gap-4 lg:grid-cols-[1fr_260px]">
@@ -52,7 +52,7 @@ export function MindMap({ map }: { map: Lesson["mindMap"] }) {
             </marker>
           </defs>
           {nodes.filter((n) => n.parent).map((n) => {
-            const p = byId[n.parent!];
+            const p = byId[n.parent!]!;
             const mx = (p.x + n.x) / 2, my = (p.y + n.y) / 2;
             const on = active && related.has(n.id) && related.has(p.id);
             return (
@@ -85,7 +85,7 @@ export function MindMap({ map }: { map: Lesson["mindMap"] }) {
       <aside className="card-surface p-5 animate-pop" key={sel.id}>
         <div className="eyebrow">{sel.depth === 0 ? "Core concept" : sel.depth === 1 ? "Branch" : "Detail"}</div>
         <h4 className="mt-2 text-lg font-bold">{sel.label}</h4>
-        {sel.parent && <p className="mt-1 text-xs text-muted-foreground">Part of {byId[sel.parent].label}</p>}
+        {sel.parent && <p className="mt-1 text-xs text-muted-foreground">Part of {byId[sel.parent]?.label}</p>}
         <p className="mt-3 text-sm leading-relaxed text-foreground/80">{sel.info || "Click any node to explore it."}</p>
         <p className="mt-5 text-xs text-muted-foreground">Hover a node to highlight its connections. Click to read about it.</p>
       </aside>
