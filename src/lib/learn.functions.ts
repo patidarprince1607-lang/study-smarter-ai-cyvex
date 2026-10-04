@@ -36,28 +36,34 @@ ${learnerBlock(data)}
 
 Create a complete personalized learning journey that directly answers THIS student's doubt (not a generic overview). Adapt depth to the level and style to the preference (Code-first => lead with code; Visual learner => describe pictures/step traces; Exam preparation => crisp marks-oriented points).
 
-Return ONLY one JSON object, no prose, with exactly this shape:
+Return ONLY one JSON object, no prose.`;
+    const head = prompt;
+    const promptA = `${head}
+Shape:
 {
   "topic": "short topic name, e.g. Binary Search",
   "diagnosis": "1-2 sentences: what the student already understands and the precise gap behind their doubt",
   "explanation": "personalized markdown explanation (150-300 words) answering the doubt directly",
   "analogy": { "title": "short title", "text": "a real-life analogy (80-140 words) suited to the preference" },
-  "notes": [ { "heading": "section heading", "body": "markdown paragraph(s)", "bullets": ["revision point", "..."] } ],
-  "keyPoints": ["exam/interview point", "..."],
-  "mindMap": { "center": "topic", "info": "one-line summary", "branches": [ { "label": "Branch", "info": "1 sentence", "children": [ { "label": "Sub-idea", "info": "1 sentence" } ] } ] },
-  "visual": { "title": "visual title", "array": [sorted integers or empty], "target": integer or null, "steps": [ { "title": "Step title", "detail": "what changes and why" } ] },
-  "example": { "title": "worked example title", "text": "markdown walk-through of a concrete example", "code": "code snippet or empty string", "language": "c|python|java|sql|text" },
-  "quiz": [ { "question": "tests understanding, not memorization", "options": ["A","B","C","D"], "answerIndex": 0, "explanation": "why the answer is right and others wrong", "concept": "short name of the sub-concept tested" } ]
+  "notes": [ { "heading": "section heading", "body": "markdown paragraph(s)", "bullets": ["revision point"] } ],
+  "keyPoints": ["exam/interview point"],
+  "example": { "title": "worked example title", "text": "markdown walk-through of a concrete example", "code": "code snippet or empty string", "language": "c|python|java|sql|text" }
 }
-Rules:
-- notes: 6-8 sections that read like real college study notes, teaching from the beginning (what it is, why it works, the key intuition behind the doubt, step-by-step procedure, a worked example, complexity/properties, common mistakes). Body may use markdown.
-- keyPoints: 5-7 concise revision points.
-- mindMap: exactly 5 branches, each with 1-4 children; labels at most 3 words.
-- visual: if the topic is searching/sorting an array, give a sorted array of 8 integers and a target that exists in it (e.g. binary search: [5,9,14,18,23,31,42,57] target 23); otherwise array [] and target null. 4-6 steps.
-- quiz: exactly 4 questions with 4 options; vary answerIndex; at least two questions probe the student's specific doubt.
-- Use the language requested in the doubt if code is requested (e.g. C).`;
+Rules: notes = 6-8 sections reading like real college study notes, teaching from the beginning (what it is, why it works, the key intuition behind the doubt, step-by-step procedure, worked example, complexity/properties, common mistakes). keyPoints = 5-7 concise revision points. If code is requested use that language (e.g. C).`;
+    const promptB = `${head}
+Shape:
+{
+  "topic": "short topic name",
+  "mindMap": { "center": "topic", "info": "one-line summary", "branches": [ { "label": "Branch", "info": "1 sentence", "children": [ { "label": "Sub-idea", "info": "1 sentence" } ] } ] },
+  "visual": { "title": "visual title", "array": [sorted integers or empty], "target": 0, "steps": [ { "title": "Step title", "detail": "what changes and why" } ] },
+  "quiz": [ { "question": "tests understanding, not memorization", "options": ["A","B","C","D"], "answerIndex": 0, "explanation": "why right and others wrong", "concept": "short sub-concept name" } ]
+}
+Rules: mindMap exactly 5 branches, each 1-4 children, labels at most 3 words. visual: if the topic is searching/sorting an array give a sorted array of 8 integers and a target that exists in it (binary search: [5,9,14,18,23,31,42,57] target 23), else array [] and target null; 4-6 steps. quiz: exactly 4 questions, 4 options each, vary answerIndex, at least two probe the student's specific doubt.`;
 
-    const { data: raw, model } = await callGemmaJson<any>(prompt);
+    const [A, B] = await Promise.all([callGemmaJson<any>(promptA), callGemmaJson<any>(promptB)]);
+    const raw = { ...B.data, ...A.data, topic: A.data.topic ?? B.data.topic };
+    const model = A.model;
+
     const quiz: QuizQ[] = arr<any>(raw.quiz)
       .map((q) => ({
         question: str(q?.question),
