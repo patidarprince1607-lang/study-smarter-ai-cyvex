@@ -7,7 +7,7 @@ import { Markdown } from "./Markdown";
 type Msg = { role: "user" | "model"; text: string };
 const SUGGEST = ["Why can't I use binary search on an unsorted array?", "Explain mid in simple terms", "Give me a C implementation", "Give me an exam answer"];
 
-export function TutorChat({ ctx, topic, weakArea }: { ctx: LearnerContext; topic: string; weakArea?: string }) {
+export function TutorChat({ ctx, topic, weakArea }: { ctx: LearnerContext; topic: string; weakArea?: string | undefined }) {
   const chat = useServerFn(tutorChat);
   const [open, setOpen] = useState(false);
   const [msgs, setMsgs] = useState<Msg[]>([]);

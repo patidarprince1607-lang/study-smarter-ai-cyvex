@@ -3,7 +3,7 @@ const BASE = "https://generativelanguage.googleapis.com/v1beta";
 let cachedModel: string | undefined;
 
 function getKey() {
-  const key = process.env.GEMINI_API_KEY;
+  const key = process.env['GEMINI_API_KEY'];
   if (!key) throw new Error("GEMINI_API_KEY is not configured on the server.");
   return key;
 }
@@ -15,7 +15,7 @@ function sizeScore(name: string) {
 }
 
 export async function resolveGemmaModel(): Promise<string> {
-  if (process.env.GEMMA_MODEL) return process.env.GEMMA_MODEL;
+  if (process.env['GEMMA_MODEL']) return process.env['GEMMA_MODEL'];
   if (cachedModel) return cachedModel;
   const res = await fetch(`${BASE}/models?pageSize=1000`, { headers: { "x-goog-api-key": getKey() } });
   if (!res.ok) throw new Error(`Gemini API model listing failed (${res.status}): ${(await res.text()).slice(0, 200)}`);
@@ -25,7 +25,7 @@ export async function resolveGemmaModel(): Promise<string> {
     .map((m) => m.name.replace(/^models\//, ""))
     .sort((a, b) => sizeScore(b) - sizeScore(a));
   if (!names.length) throw new Error("No Gemma 4 model is available for this Gemini API key.");
-  cachedModel = names[0];
+  cachedModel = names[0]!;
   return cachedModel;
 }
 

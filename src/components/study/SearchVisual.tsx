@@ -53,7 +53,7 @@ export function SearchVisual({ visual }: { visual: Lesson["visual"] }) {
           </div>
           <div className="mt-6 grid gap-1.5 sm:gap-2" style={{ gridTemplateColumns: `repeat(${visual.array.length}, minmax(0,1fr))` }}>
             {visual.array.map((v, idx) => {
-              const fr = frames[i];
+              const fr = frames[i]!;
               const out = idx < fr.low || idx > fr.high;
               const isMid = fr.mid === idx;
               const isFound = fr.found === idx;
@@ -70,12 +70,12 @@ export function SearchVisual({ visual }: { visual: Lesson["visual"] }) {
             })}
           </div>
           <div className="mt-4 h-2 rounded-full bg-muted overflow-hidden">
-            <div className="h-full bg-brand transition-all duration-500" style={{ width: `${(Math.max(0, frames[i].high - frames[i].low + 1) / visual.array.length) * 100}%` }} />
+            <div className="h-full bg-brand transition-all duration-500" style={{ width: `${(Math.max(0, frames[i]!.high - frames[i]!.low + 1) / visual.array.length) * 100}%` }} />
           </div>
           <p className="mt-1 text-xs text-muted-foreground">Remaining search space</p>
           <div key={i} className="mt-4 rounded-xl bg-secondary p-4 animate-pop">
-            <div className="text-xs font-bold text-electric">Step {i} of {frames.length - 1} · {frames[i].title}</div>
-            <p className="mt-1 text-sm">{frames[i].caption}</p>
+            <div className="text-xs font-bold text-electric">Step {i} of {frames.length - 1} · {frames[i]!.title}</div>
+            <p className="mt-1 text-sm">{frames[i]!.caption}</p>
           </div>
         </div>
       )}

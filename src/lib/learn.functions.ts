@@ -128,7 +128,7 @@ Detected weak concept: ${data.weakArea}
 Questions the student got wrong:
 ${data.wrongs.map((w) => `- ${w.question} (chose "${w.chosen}", correct "${w.correct}")`).join("\n") || "- none"}
 
-Re-teach ONLY the weak concept differently than a standard explanation, using ${MODE_TEXT[data.mode] ?? MODE_TEXT.simpler}.
+Re-teach ONLY the weak concept differently than a standard explanation, using ${MODE_TEXT[data.mode] ?? MODE_TEXT['simpler']}.
 Directly address why the chosen wrong answers were tempting but wrong. End with one quick self-check question (answer hidden under a line "Answer:"). Respond in markdown, 180-320 words.`;
     return callGemma([{ role: "user", text: prompt }], 0.8);
   });
