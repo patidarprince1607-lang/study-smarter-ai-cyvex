@@ -7,17 +7,17 @@ function framesFor(arr: number[], target: number): Frame[] {
   const f: Frame[] = [{ low: 0, high: arr.length - 1, mid: null, found: null, title: "Start", caption: `Search space is the whole array (${arr.length} items). Looking for ${target}.` }];
   let low = 0, high = arr.length - 1;
   while (low <= high) {
-    const mid = Math.floor((low + high) / 2);
+    const mid = Math.floor((low + high) / 2); const mv = arr[mid]!;
     f.push({ low, high, mid, found: null, title: "Check the middle", caption: `mid = ${mid} → arr[mid] = ${arr[mid]}. Compare ${target} with ${arr[mid]}.` });
     if (arr[mid] === target) {
       f.push({ low: mid, high: mid, mid, found: mid, title: "Found it", caption: `${target} found at index ${mid} after ${f.filter((x) => x.mid !== null && x.found === null).length} checks.` });
       return f;
     }
-    if (target < arr[mid]) {
-      f.push({ low, high: mid - 1, mid, found: null, title: "Remove the right half", caption: `${target} < ${arr[mid]}, so everything from index ${mid} rightwards is eliminated.` });
+    if (target < mv) {
+      f.push({ low, high: mid - 1, mid, found: null, title: "Remove the right half", caption: `${target} < ${mv}, so everything from index ${mid} rightwards is eliminated.` });
       high = mid - 1;
     } else {
-      f.push({ low: mid + 1, high, mid, found: null, title: "Remove the left half", caption: `${target} > ${arr[mid]}, so everything up to index ${mid} is eliminated.` });
+      f.push({ low: mid + 1, high, mid, found: null, title: "Remove the left half", caption: `${target} > ${mv}, so everything up to index ${mid} is eliminated.` });
       low = mid + 1;
     }
   }
